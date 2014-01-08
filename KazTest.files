@@ -1,0 +1,3 @@
+include/kaztest/kaztest.h
+CMakeLists.txt
+bin/kaztest_gen
