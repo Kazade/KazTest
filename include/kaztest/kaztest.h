@@ -113,9 +113,9 @@ public:
 
                 std::cout << output;
                 test();
-                std::cout << "\033[32m" << "   OK   " << std::endl;
+                std::cout << "\033[32m" << "   OK   " << "\033[0m" << std::endl;
             } catch(AssertionError& e) {
-                std::cout << "\033[33m" << " FAILED " << std::endl;
+                std::cout << "\033[33m" << " FAILED " << "\033[0m" << std::endl;
                 std::cout << "        " << e.what() << std::endl;
                 if(!e.file.empty()) {
                     std::cout << "        " << e.file << ":" << e.line << std::endl;
@@ -129,10 +129,10 @@ public:
                 ++failed;
             } catch(std::exception& e) {
                 std::cout << "\033[31m" << " EXCEPT " << std::endl;
-                std::cout << "        " << e.what() << std::endl;
+                std::cout << "        " << e.what() << "\033[0m" << std::endl;
                 ++crashed;
             }
-            std::cout << "\033[37m";
+            std::cout << "\033[0m";
             ++ran;
         }
 

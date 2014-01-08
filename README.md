@@ -61,5 +61,4 @@ kaztest.h makes use of code from the KazBase library. If you use KazTest in your
  - Make sure the generated executable returns values suitable for ctest (it might already do this)
  - Make discovery of tests more robust
  - Allow specifying a directory to kaztest_gen, which would then discover all files prefixed with `test_` in subdirectories
- - Fix output colouring (doesn't properly reset to the default colour)
 
