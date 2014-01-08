@@ -4,7 +4,7 @@ After being frustrated with the difficulty creating test cases in C++ test frame
 
 It's dead simple to use, and uses Python to for test discovery so you don't need to register your test cases with crazy macros!
 
-# Usage
+## Usage
 
 To use, simply do the following:
     
@@ -27,11 +27,11 @@ For example, to hook `kaztest_gen` into CMake do the following:
 
 Where `${TEST_FILES}` is a list of your `test_X.h` test files. You can then run your tests by executing `my_tests` or running ctest
 
-# Dependencies
+## Dependencies
 
 testing.h makes use of code from the KazBase library. If you use KazTest in your project, your generated test executable will need to depend on the KazBase library.
 
-# TODO:
+## TODO:
 
  - Allow specifying specific test cases, and test methods when running the generated executable (e.g. `./my_tests MyTestCase.test_thing )
  - Make sure the generated executable returns values suitable for ctest (it might already do this)
