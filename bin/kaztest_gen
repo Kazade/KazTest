@@ -19,7 +19,7 @@ MAIN_TEMPLATE = """
 
 #include <functional>
 #include <memory>
-#include <kglt/kazbase/testing.h>
+#include <kaztest/kaztest.h>
 
 %(includes)s
 

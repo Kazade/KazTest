@@ -1,3 +1,5 @@
 include/kaztest/kaztest.h
 CMakeLists.txt
 bin/kaztest_gen
+KAZTESTConfig.cmake
+README.md

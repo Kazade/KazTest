@@ -9,16 +9,18 @@ It's dead simple to use, and uses Python to for test discovery so you don't need
 To use, simply do the following:
     
  - Create a header file for your tests, I tend to prefix mine with `test_` 
- - In your header file, include `<kaztest/testing.h>`
+ - In your header file, include `<kaztest/kaztest.h>`
  - In your header file, create a class that subclasses TestCase
  - Write your tests in methods prefixed with `test_` you can also override `set_up()` and `tear_down()`
  - Hook `kaztest_gen` into your build system. This is a Python file that takes a list of test files as input, and generates a main.cpp file.
 
 For example, to hook `kaztest_gen` into CMake do the following:
     
+    FIND_PACKAGE(KAZTEST REQUIRED)
+
     ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp 
-        COMMAND kaztest_gen ${TEST_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+        COMMAND ${KAZTEST_EXECUTABLE} ${TEST_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
         DEPENDS ${TEST_FILES}
     )
 
