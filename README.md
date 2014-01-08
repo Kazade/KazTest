@@ -31,7 +31,7 @@ Where `${TEST_FILES}` is a list of your `test_X.h` test files. You can then run 
 
 ## Dependencies
 
-testing.h makes use of code from the KazBase library. If you use KazTest in your project, your generated test executable will need to depend on the KazBase library.
+kaztest.h makes use of code from the KazBase library. If you use KazTest in your project, your generated test executable will need to depend on the KazBase library.
 
 ## TODO:
 
