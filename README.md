@@ -6,6 +6,28 @@ It's dead simple to use, and uses Python to for test discovery so you don't need
 
 ## Usage
 
+Here's a basic example of what a test file looks like:
+    
+    #include <kaztest/kaztest.h>
+
+    class MyTests : public TestCase {
+    public:
+        void set_up() {
+            //Do set up stuff
+        }
+
+        void tear_down() {
+            //Do tear down stuff
+        }
+
+        void test_bananas() {
+            assert_true(we_have_bananas());
+            assert_equal(10, banana_count());
+            assert_almost_equal(20.0, average_banana_length(), 0.001f);
+        }
+    };
+
+
 To use, simply do the following:
     
  - Create a header file for your tests, I tend to prefix mine with `test_` 
