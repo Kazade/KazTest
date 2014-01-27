@@ -10,7 +10,7 @@ INCLUDE_TEMPLATE = "#include \"%(file_path)s\""
 
 REGISTER_TEMPLATE = """
     runner->register_case<%(class_name)s>(
-        std::vector<void (%(class_name)s::*)()>({%(members)s}), 
+        std::vector<void (%(class_name)s::*)()>({%(members)s}),
         {%(names)s}
     );
 """
@@ -66,7 +66,8 @@ def main():
 
     for file_path in args:
         content = open(file_path, "r").readlines()
-        
+        current_case = None
+
         for line in content:
             case = find_case(line)
             if case:
@@ -84,14 +85,14 @@ def main():
     registrations = []
     for case, funcs in test_cases.items():
         BIND_TEMPLATE = "&%(class_name)s::%(func)s"
-        
+
         members = ", ".join([ BIND_TEMPLATE % { 'class_name' : case, 'func' : x } for x in funcs ])
         names = ", ".join([ '"%s::%s"' % (case, x) for x in funcs ])
-        
+
         registrations.append(REGISTER_TEMPLATE % { 'class_name' : case, 'members' : members, 'names' : names })
-    
+
     registrations = "\n".join(registrations)
-    
+
     final = MAIN_TEMPLATE % {
         'registrations' : registrations,
         'includes' : includes
