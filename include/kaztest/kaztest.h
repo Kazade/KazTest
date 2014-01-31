@@ -98,12 +98,31 @@ public:
         }
     }
 
-    int32_t run() {
+    int32_t run(const std::string& test_case) {
         int failed = 0;
         int ran = 0;
         int crashed = 0;
         std::cout << std::endl << "Running " << tests_.size() << " tests" << std::endl << std::endl;
+
+        int32_t test_case_index = -1;
+        if(!test_case.empty()) {
+            for(int i = 0; i < names_.size(); ++i) {
+                if(names_[i] == test_case) {
+                    test_case_index = i;
+                }
+            }
+        }
+
+        int32_t i = 0;
         for(std::function<void ()> test: tests_) {
+            if(test_case_index > -1 && i != test_case_index) {
+                i++;
+                continue;
+            } else {
+                std::cout << "Running specified case: " << names_[i] << std::endl;
+                i++;
+            }
+
             try {
                 std::string output = "    " + names_[ran];
 

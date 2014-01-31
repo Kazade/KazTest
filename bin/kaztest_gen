@@ -26,9 +26,14 @@ MAIN_TEMPLATE = """
 int main(int argc, char* argv[]) {
     std::shared_ptr<TestRunner> runner(new TestRunner());
     
+    std::string test_case;
+    if(argc > 1) {
+        test_case = argv[1];
+    }
+
     %(registrations)s
     
-    return runner->run();
+    return runner->run(test_case);
 }
 
 
