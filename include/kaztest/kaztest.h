@@ -109,18 +109,18 @@ public:
             for(int i = 0; i < names_.size(); ++i) {
                 if(names_[i] == test_case) {
                     test_case_index = i;
+                    std::cout << "Running specified case: " << names_[i] << std::endl;
                 }
             }
         }
 
-        int32_t i = 0;
+        int32_t k = 0;
         for(std::function<void ()> test: tests_) {
-            if(test_case_index > -1 && i != test_case_index) {
-                i++;
+            if(test_case_index > -1 && k != test_case_index) {
+                k++;
                 continue;
             } else {
-                std::cout << "Running specified case: " << names_[i] << std::endl;
-                i++;
+                k++;
             }
 
             try {
@@ -139,9 +139,13 @@ public:
                 if(!e.file.empty()) {
                     std::cout << "        " << e.file << ":" << e.line << std::endl;
                     if(os::path::exists(e.file)) {
-                        std::vector<unicode> lines = file_utils::read_lines(e.file);
-                        if(e.line <= lines.size()) {
-                            std::cout << lines[e.line - 1].encode() << std::endl << std::endl;
+                        using file_utils::read_lines;
+
+                        unicode file = e.file;
+                        std::vector<unicode> lines = read_lines(file);
+                        int line_count = lines.size();
+                        if(line_count && e.line <= line_count) {
+                            std::cout << lines.at(e.line - 1).encode() << std::endl << std::endl;
                         }
                     }
                 }
