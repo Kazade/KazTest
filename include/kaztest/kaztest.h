@@ -4,7 +4,6 @@
 #include <vector>
 #include <functional>
 #include <stdexcept>
-#include <boost/any.hpp>
 #include <iostream>
 
 #include <kazbase/unicode.h>
@@ -85,7 +84,7 @@ class TestRunner {
 public:
     template<typename T, typename U>
     void register_case(std::vector<U> methods, std::vector<std::string> names) {
-        std::shared_ptr<T> instance(new T());
+        std::shared_ptr<TestCase> instance = std::make_shared<T>();
 
         instances_.push_back(instance); //Hold on to it
 
@@ -94,7 +93,7 @@ public:
         }
 
         for(U& method: methods) {
-            std::function<void()> func = std::bind(method, instance.get());
+            std::function<void()> func = std::bind(method, dynamic_cast<T*>(instance.get()));
             tests_.push_back([=]() {
                 instance->set_up();
                 func();
@@ -196,7 +195,7 @@ public:
     }
 
 private:
-    std::vector<boost::any> instances_;
+    std::vector<std::shared_ptr<TestCase>> instances_;
     std::vector<std::function<void()> > tests_;
     std::vector<std::string> names_;
 };

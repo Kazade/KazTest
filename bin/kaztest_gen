@@ -2,6 +2,11 @@
 import sys
 import re
 
+import argparse
+
+parser = argparse.ArgumentParser(description="Generate C++ unit tests")
+parser.add_argument("--tests", type=unicode, nargs="+", help="The list of C++ files containing your tests")
+
 TEST_CASE_REGEX = r"class\s+(?P<class_name>\S+)\s+:\s+public\s+TestCase"
 TEST_FUNC_REGEX = r"void\s+(?P<func_name>test_\S[^\(]+)\(\s*(void)?\s*\)"
 
@@ -25,19 +30,97 @@ MAIN_TEMPLATE = """
 
 int main(int argc, char* argv[]) {
     std::shared_ptr<TestRunner> runner(new TestRunner());
-    
+
     std::string test_case;
     if(argc > 1) {
         test_case = argv[1];
     }
 
     %(registrations)s
-    
+
     return runner->run(test_case);
 }
 
 
 """
+
+CLASS_REGEX = r"\s*class\s+(\w+)\s*([\:|,]\s*(?:public|private|protected)\s+\w+\s*)*"
+
+def find_tests(files):
+
+    subclasses = []
+
+    # First pass, find all class definitions
+    for path in files:
+        with open(path, "rt") as f:
+            source_file_data = f.read().replace("\r\n", "").replace("\n", "")
+
+            while True:
+                match = re.search(CLASS_REGEX, source_file_data)
+                if not match:
+                    break
+
+                class_name = match.group().split(":")[0].replace("class", "").strip()
+
+                try:
+                    parents = match.group().split(":")[1]
+                except IndexError:
+                    pass
+                else:
+                    parents = [ x.strip() for x in parents.split(",") ]
+                    parents = [
+                        x.replace("public", "").replace("private", "").replace("protected", "").strip()
+                        for x in parents
+                    ]
+
+                    subclasses.append((class_name, parents, []))
+
+                start = match.end()
+
+                # Find the next opening brace
+                while source_file_data[start] in (' ', '\t'):
+                    start += 1
+
+                start -= 1
+                end = start
+                if source_file_data[start+1] == '{':
+
+                    class_data = []
+                    brace_counter = 1
+                    for i in xrange(start, len(source_file_data)):
+                        class_data.append(source_file_data[i])
+                        if class_data[-1] == '{': brace_counter += 1
+                        if class_data[-1] == '}': brace_counter -= 1
+                        if not brace_counter:
+                            end = i
+                            break
+
+                    class_data = "".join(class_data)
+
+                    while True:
+                        match = re.search(TEST_FUNC_REGEX, class_data)
+                        if not match:
+                            break
+
+                        subclasses[-1][-1].append(match.group('func_name'))
+                        class_data = class_data[match.end():]
+
+                source_file_data = source_file_data[end:]
+
+
+    # Now, simplify the list by finding all potential superclasses, and then keeping any classes
+    # that subclass them.
+    test_case_subclasses = []
+    i = 0
+    while i < len(subclasses):
+        if "TestCase" in subclasses[i][1] or any(x[0] in subclasses[i][1] for x in test_case_subclasses):
+            if subclasses[i] not in test_case_subclasses:
+                test_case_subclasses.append(subclasses[i])
+                i = 0
+                continue
+        i += 1
+
+    return test_case_subclasses
 
 
 def find_case(line):
@@ -59,9 +142,14 @@ def find_test_func(line):
         return None
 
 def main():
+    args = parser.parse_args()
+
+    testcases = find_tests(args.tests)
+    return 0
+
     args = sys.argv[1:-1]
     output = sys.argv[-1]
-    
+
     if not args:
         print("Please specify some files to generate tests from")
         return 1
@@ -85,7 +173,7 @@ def main():
                 func = find_test_func(line)
                 if func:
                     test_cases[current_case].append(func)
-                
+
     includes = "\n".join([ INCLUDE_TEMPLATE % { 'file_path' : x } for x in args ])
     registrations = []
     for case, funcs in test_cases.items():
@@ -102,9 +190,9 @@ def main():
         'registrations' : registrations,
         'includes' : includes
     }
-    
+
     open(output, "w").write(final)
-    
+
     return 0
 
 if __name__ == '__main__':
