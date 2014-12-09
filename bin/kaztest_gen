@@ -9,7 +9,7 @@ parser.add_argument("--output", type=unicode, nargs=1, help="The output source f
 parser.add_argument("test_files", type=unicode, nargs="+", help="The list of C++ files containing your tests")
 
 
-TEST_CASE_REGEX = r"class\s+(?P<class_name>\S+)\s+:\s+public\s+TestCase"
+CLASS_REGEX = r"\s*class\s+(\w+)\s*([\:|,]\s*(?:public|private|protected)\s+\w+\s*)*"
 TEST_FUNC_REGEX = r"void\s+(?P<func_name>test_\S[^\(]+)\(\s*(void)?\s*\)"
 
 
@@ -44,8 +44,6 @@ int main(int argc, char* argv[]) {
 
 
 """
-
-CLASS_REGEX = r"\s*class\s+(\w+)\s*([\:|,]\s*(?:public|private|protected)\s+\w+\s*)*"
 
 def find_tests(files):
 
@@ -123,24 +121,6 @@ def find_tests(files):
 
     return test_case_subclasses
 
-
-def find_case(line):
-    result = re.search(TEST_CASE_REGEX, line)
-    if result:
-        case = result.group('class_name')
-        print("Found case: %s" % case)
-        return case
-    else:
-        return None
-
-def find_test_func(line):
-    result = re.search(TEST_FUNC_REGEX, line)
-    if result:
-        func = result.group('func_name')
-        print("Found func: %s" % func)
-        return func
-    else:
-        return None
 
 def main():
     args = parser.parse_args()
