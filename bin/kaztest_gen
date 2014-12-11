@@ -86,7 +86,7 @@ def find_tests(files):
 
                     class_data = []
                     brace_counter = 1
-                    for i in xrange(start, len(source_file_data)):
+                    for i in xrange(start+2, len(source_file_data)):
                         class_data.append(source_file_data[i])
                         if class_data[-1] == '{': brace_counter += 1
                         if class_data[-1] == '}': brace_counter -= 1
