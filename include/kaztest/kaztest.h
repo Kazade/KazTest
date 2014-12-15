@@ -17,6 +17,7 @@
 #define assert_close(expected, actual, difference) _assert_close((expected), (actual), (difference), __FILE__, __LINE__)
 #define assert_is_null(actual) _assert_is_null((actual), __FILE__, __LINE__)
 #define assert_is_not_null(actual) _assert_is_not_null((actual), __FILE__, __LINE__)
+#define assert_raises(func) _assert_raises((func), __FILE__, __LINE__)
 #define not_implemented() _not_implemented(__FILE__, __LINE__)
 
 class TestCase {
@@ -73,6 +74,15 @@ public:
             auto file_and_line = std::make_pair(file, line);
             throw AssertionError(file_and_line, "Pointer was unexpectedly NULL");
         }
+    }
+
+    template<typename T, typename Func>
+    void _assert_raises(Func func, unicode file, int line) {
+        try {
+            func();
+            auto file_and_line = std::make_pair(file, line);
+            throw AssertionError(file_and_line, _u("Expected exception ({0}) was not thrown").format(typeid(T).name()));
+        } catch(T& e) {}
     }
 
     void _not_implemented(unicode file, int line) {
