@@ -17,7 +17,7 @@
 #define assert_close(expected, actual, difference) _assert_close((expected), (actual), (difference), __FILE__, __LINE__)
 #define assert_is_null(actual) _assert_is_null((actual), __FILE__, __LINE__)
 #define assert_is_not_null(actual) _assert_is_not_null((actual), __FILE__, __LINE__)
-#define assert_raises(func) _assert_raises((func), __FILE__, __LINE__)
+#define assert_raises(exception, func) _assert_raises<exception>((func), __FILE__, __LINE__)
 #define not_implemented() _not_implemented(__FILE__, __LINE__)
 
 class TestCase {
