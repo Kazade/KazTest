@@ -117,29 +117,29 @@ public:
         int skipped = 0;
         int ran = 0;
         int crashed = 0;
-        std::cout << std::endl << "Running " << tests_.size() << " tests" << std::endl << std::endl;
 
-        int32_t test_case_index = -1;
+        auto new_tests = tests_;
+        auto new_names = names_;
+
         if(!test_case.empty()) {
+            new_tests.clear();
+            new_names.clear();
+
             for(int i = 0; i < names_.size(); ++i) {
-                if(names_[i] == test_case) {
-                    test_case_index = i;
-                    std::cout << "Running specified case: " << names_[i] << std::endl;
+                if(_u(names_[i]).starts_with(test_case)) {
+                    new_tests.push_back(tests_[i]);
+                    new_names.push_back(names_[i]);
                 }
             }
         }
 
-        int32_t k = 0;
-        for(std::function<void ()> test: tests_) {
-            if(test_case_index > -1 && k != test_case_index) {
-                k++;
-                continue;
-            } else {
-                k++;
-            }
+        std::cout << std::endl << "Running " << new_tests.size() << " tests" << std::endl << std::endl;
 
+
+        int32_t k = 0;
+        for(std::function<void ()> test: new_tests) {
             try {
-                std::string output = "    " + names_[ran];
+                std::string output = "    " + new_names[ran];
 
                 for(int i = output.length(); i < 76; ++i) {
                     output += " ";
