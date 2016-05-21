@@ -51,14 +51,12 @@ For example, to hook `kaztest_gen` into CMake do the following:
 
 Where `${TEST_FILES}` is a list of your `test_X.h` test files. You can then run your tests by executing `my_tests` or running ctest
 
-## Dependencies
-
-kaztest.h makes use of code from the KazBase library. If you use KazTest in your project, your generated test executable will need to depend on the KazBase library.
 
 ## TODO:
 
- - Allow specifying specific test cases, and test methods when running the generated executable (e.g. `./my_tests MyTestCase.test_thing )
  - Make sure the generated executable returns values suitable for ctest (it might already do this)
  - Make discovery of tests more robust
  - Allow specifying a directory to kaztest_gen, which would then discover all files prefixed with `test_` in subdirectories
+ - Support TestCases inside namespaces
+
 

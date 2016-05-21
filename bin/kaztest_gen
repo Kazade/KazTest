@@ -25,7 +25,7 @@ MAIN_TEMPLATE = """
 
 #include <functional>
 #include <memory>
-#include <kaztest/kaztest.h>
+#include "kaztest/kaztest.h"
 
 %(includes)s
 
